@@ -7,6 +7,7 @@ class Base(db.Model):
         created  = db.Column(db.DateTime,  default=db.func.current_timestamp())
         modified = db.Column(db.DateTime,  default=db.func.current_timestamp())
 
+
 class Package(Base):
         __tablename__ = 'package'
         description = db.Column(db.String(1024), unique=False)
@@ -16,6 +17,7 @@ class Package(Base):
         type = db.Column(db.Enum("debian", "rpm"))
         arch = db.Column(db.Enum("amd64", "i386"))
         public = db.Column(db.Enum("True", "False"), unique=False, default="True")
+        repository_package = db.relationship('RepositoryPackage')
 
         def __init__(self, name=None, description=None, version=None, location=None, md5sum=None, type=None, arch=None, public=True):
                 self.name = name
