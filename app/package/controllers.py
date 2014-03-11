@@ -1,13 +1,8 @@
-from flask import Blueprint, jsonify
 from app import db
-from app.package.models import Package
+from app import app
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.restless import APIManager
+from app.package.models import Package
 
-pkg = Blueprint('package', __name__, url_prefix='/package')
-
-@pkg.route('/<package_id>', methods = ['GET'])
-def package(package_id):
-        package = Package.query.filter_by(id=package_id)
-        print package
-        return ("Package id %r" % package_id)
-#        return jsonify( { 'packages': package } )
+manager = APIManager(app, flask_sqlalchemy_db=db)
+manager.create_api(Package, methods=['GET', 'POST', 'DELETE'], results_per_page=-1)

@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.restless import APIManager
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -9,14 +10,11 @@ db = SQLAlchemy(app)
 def not_found(error):
       return render_template('404.html'), 404
 
-from package.controllers import pkg
-app.register_blueprint(pkg)
+# import controllers/models before create_all
+import package.controllers
+import package.models
+
+# Create all the db tables
 db.create_all()
 
-
-# TEMPORARY FOR TESTING
-from package.models import Package
-p = Package(name='blah')
-db.session.add(p)
-db.session.commit()
-
+manager = APIManager(app, flask_sqlalchemy_db=db)
